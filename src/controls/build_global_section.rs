@@ -1,8 +1,13 @@
+use crate::{AppControls, AppState, StepAuthoringTool};
 use libamx::StxVersion;
 use libui::controls::Group;
-use crate::StepAuthoringTool;
+use std::cell::RefCell;
+use std::rc::Rc;
 
-pub fn build_global_section() -> Group {
+pub fn build_global_section(
+    _app_controls_rc: Rc<RefCell<AppControls>>,
+    _app_state_rc: Rc<RefCell<AppState>>,
+) -> Group {
     libui::layout! { ui,
         let group = Group("") {
             let _cnpgcopy = LayoutGrid(padded: true) {

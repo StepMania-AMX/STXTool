@@ -1,12 +1,14 @@
-use crate::{AppState, DialogTitle, ErrorMessage, StxModeColumn};
-use libui::controls::{SelectionMode, SortIndicator, Table, TableModel, TableParameters, Window};
+use crate::{AppControls, AppState, DialogTitle, ErrorMessage, StxModeColumn};
+use libui::controls::{SelectionMode, SortIndicator, Table, TableModel, TableParameters};
 use std::cell::RefCell;
 use std::rc::Rc;
 use strum::IntoEnumIterator;
 
-pub fn build_stx_mode_table(win: Rc<RefCell<Window>>) -> (Table, Rc<RefCell<AppState>>) {
-    let data = Rc::new(RefCell::new(AppState::new(win.clone())));
-    let model = Rc::new(RefCell::new(TableModel::new(data.clone())));
+pub fn build_stx_mode_table(
+    app_controls_rc: Rc<RefCell<AppControls>>,
+    app_state_rc: Rc<RefCell<AppState>>,
+) -> Table {
+    let model = Rc::new(RefCell::new(TableModel::new(app_state_rc.clone())));
     let params = TableParameters::new(model.clone());
     let mut table = Table::new(params);
 
@@ -41,21 +43,21 @@ pub fn build_stx_mode_table(win: Rc<RefCell<Window>>) -> (Table, Rc<RefCell<AppS
     table.set_selection_mode(SelectionMode::ZeroOrOne);
     table.set_sort_indicator(StxModeColumn::Mode as i32, SortIndicator::Ascending);
 
-    if data.borrow().is_enabled() {
+    if app_state_rc.borrow().is_enabled() {
         table.enable();
     } else {
         table.disable();
     }
 
     table.on_header_clicked({
-        let win = win.clone();
+        let app_controls_rc = app_controls_rc.clone();
         move |_table, _column| {
-            win.borrow().modal_err(
+            app_controls_rc.borrow().get_main_win().modal_err(
                 DialogTitle::OperationNotAllowed.into(),
                 ErrorMessage::SortingDisabled.into(),
             );
         }
     });
 
-    (table, data)
+    table
 }

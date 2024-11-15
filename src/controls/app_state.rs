@@ -1,14 +1,14 @@
-use crate::FloatWrapper;
+use crate::util::NoDebug;
+use crate::{AppControls, FloatWrapper};
 use libamx::{InitialTiming, LegacyMode, StxFile};
-use libui::controls::Window;
 use statistical::mode as statistical_mode;
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
-use std::fmt;
 use std::rc::Rc;
 
+#[derive(Debug)]
 pub struct AppState {
-    active_win: Rc<RefCell<Window>>,
+    ptr: NoDebug<Rc<RefCell<AppControls>>>,
     stx_file: Option<StxFile>,
     cache_difficulty: HashMap<LegacyMode, i32>,
     cache_selection: HashSet<LegacyMode>,
@@ -17,22 +17,6 @@ pub struct AppState {
     next_delete: HashSet<LegacyMode>,
     next_export: Option<LegacyMode>,
     next_import: Option<LegacyMode>,
-}
-
-impl fmt::Debug for AppState {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("DataSource")
-            .field("active_win", &"Rc<RefCell<Window>>")
-            .field("stx_file", &self.stx_file)
-            .field("cache_difficulty", &self.cache_difficulty)
-            .field("cache_selection", &self.cache_selection)
-            .field("cache_stats", &self.cache_stats)
-            .field("cache_timing", &self.cache_timing)
-            .field("next_delete", &self.next_delete)
-            .field("next_export", &self.next_export)
-            .field("next_import", &self.next_import)
-            .finish()
-    }
 }
 
 impl AppState {
@@ -51,10 +35,6 @@ impl AppState {
     pub fn close_file(&mut self) {
         self.stx_file = None;
         self.clear_cache();
-    }
-
-    pub fn get_active_win(&self) -> &Rc<RefCell<Window>> {
-        &self.active_win
     }
 
     pub fn get_bpm(&mut self, mode: LegacyMode) -> Option<String> {
@@ -158,9 +138,17 @@ impl AppState {
         self.stx_file.is_some()
     }
 
-    pub fn new(active_win: Rc<RefCell<Window>>) -> Self {
+    pub fn modal_err(&self, title: &str, description: &str) {
+        self.ptr
+            .0
+            .borrow()
+            .get_main_win()
+            .modal_err(title, description);
+    }
+
+    pub fn new(ptr: Rc<RefCell<AppControls>>) -> Self {
         AppState {
-            active_win,
+            ptr: NoDebug(ptr),
             stx_file: None,
             cache_difficulty: HashMap::default(),
             cache_selection: HashSet::default(),
@@ -175,10 +163,6 @@ impl AppState {
     pub fn open_file(&mut self, file: StxFile) {
         self.stx_file = Some(file);
         self.clear_cache();
-    }
-
-    pub fn set_active_win(&mut self, win: Rc<RefCell<Window>>) {
-        self.active_win = win;
     }
 
     pub fn set_next_delete(&mut self, mode: LegacyMode) {

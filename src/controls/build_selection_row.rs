@@ -1,10 +1,15 @@
 #![allow(unused_mut)]
 
-use crate::StepFormat;
+use crate::{AppControls, AppState, StepFormat};
 use libui::controls::{Button, Checkbox, Combobox, HorizontalBox, LayoutStrategy, Spacer};
+use std::cell::RefCell;
+use std::rc::Rc;
 use strum::IntoEnumIterator;
 
-pub fn build_selection_row() -> HorizontalBox {
+pub fn build_selection_row(
+    _app_controls_rc: Rc<RefCell<AppControls>>,
+    _app_state_rc: Rc<RefCell<AppState>>,
+) -> HorizontalBox {
     let mut selection_row = HorizontalBox::new();
     selection_row.set_padded(true);
 
