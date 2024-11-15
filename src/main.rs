@@ -11,7 +11,7 @@ mod util;
 pub use util::*;
 
 fn main() {
-    let ui = std::rc::Rc::new(libui::UI::init().expect("Couldn't initialize UI library."));
+    let ui = std::rc::Rc::new(libui::UI::init().expect(ErrorMessage::UiLibraryInit.into()));
     let win = build_main_window(ui.clone());
     win.borrow_mut().show();
     ui.main();

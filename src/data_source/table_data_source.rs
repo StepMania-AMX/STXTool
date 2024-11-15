@@ -1,4 +1,4 @@
-use crate::{DataSource, DataSourceColumn};
+use crate::{DataSource, DataSourceColumn, DialogTitle, ErrorMessage};
 use libamx::LegacyMode;
 use libui::controls::{TableDataSource, TableValue, TableValueType};
 use strum::EnumCount;
@@ -49,8 +49,8 @@ impl TableDataSource for DataSource {
     fn set_cell(&mut self, column: i32, row: i32, value: TableValue) {
         if !self.is_enabled() {
             self.get_active_win().borrow().modal_err(
-                "Operation not allowed",
-                "You need to open a STX file before you do this operation.",
+                DialogTitle::OperationNotAllowed.into(),
+                ErrorMessage::StepFileNotOpen.into(),
             );
             return;
         }

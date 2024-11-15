@@ -1,4 +1,4 @@
-use crate::{build_global_section, build_mode_table, build_selection_row};
+use crate::{build_global_section, build_mode_table, build_selection_row, ErrorMessage};
 use libui::controls::{LayoutStrategy, VerticalBox, Window, WindowType};
 use libui::UI;
 use screen_size::get_primary_screen_size;
@@ -22,7 +22,7 @@ pub fn build_main_window(ui: Rc<UI>) -> Rc<RefCell<Window>> {
     )));
 
     let (screen_width, screen_height) =
-        get_primary_screen_size().expect("Could not retrieve primary screen size.");
+        get_primary_screen_size().expect(ErrorMessage::PrimaryScreenSize.into());
     win.borrow_mut().set_position(
         (screen_width as i32 - width) / 2,
         (screen_height as i32 - height) / 2,

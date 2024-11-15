@@ -1,4 +1,4 @@
-use crate::{DataSource, DataSourceColumn};
+use crate::{DataSource, DataSourceColumn, DialogTitle, ErrorMessage};
 use libui::controls::{SelectionMode, Table, TableModel, TableParameters, Window};
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -50,8 +50,8 @@ pub fn build_mode_table(win: Rc<RefCell<Window>>) -> (Table, Rc<RefCell<DataSour
         let win = win.clone();
         move |_table, _column| {
             win.borrow().modal_err(
-                "Operation not allowed",
-                "Sorting is disabled for this table.",
+                DialogTitle::OperationNotAllowed.into(),
+                ErrorMessage::SortingDisabled.into(),
             );
         }
     });
