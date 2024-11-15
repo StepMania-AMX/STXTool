@@ -1,0 +1,16 @@
+[package]
+name = "STXTool"
+description = "UI application to work with STX files."
+version = "0.1.0"
+authors = ["Aldo Fregoso <aldomx@gmail.com>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+libamx = { git = "ssh://git@github.com/StepMania-AMX/libamx.git" }
+libui = { git = "https://github.com/libui-rs/libui" }
+num-traits = "0.2.19"
+screen_size = "0.1.0"
+statistical = "1.0.0"
+strum = { version = "0.26.3", features = ["derive"] }
