@@ -4,7 +4,6 @@
     strum::Display,
     strum::EnumCount,
     strum::EnumIter,
-    strum::EnumString,
     strum::FromRepr,
     strum::IntoStaticStr,
 )]

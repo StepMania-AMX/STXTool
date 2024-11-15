@@ -1,5 +1,6 @@
 use libamx::StxVersion;
 use libui::controls::Group;
+use crate::StepAuthoringTool;
 
 pub fn build_global_section() -> Group {
     libui::layout! { ui,
@@ -10,14 +11,15 @@ pub fn build_global_section() -> Group {
                     Compact: let version_label = Label("Version")
                 }
                 (1, 0)(1, 1) Neither (Fill, Fill): let version_combo = Combobox() {
-                    &StxVersion::Rebirth.to_string(),
-                    &StxVersion::Exceed2.to_string(),
-                    &StxVersion::NewXenesis.to_string()
+                    StxVersion::Rebirth.into(),
+                    StxVersion::Exceed2.into(),
+                    StxVersion::NewXenesis.into()
                 }
 
                 (2, 0)(1, 1) Neither (Fill, Fill): let save_tool_label = Label("Save Tool")
                 (3, 0)(1, 1) Neither (Fill, Fill): let save_tool_combo = EditableCombobox() {
-                    "STXTool", "STEPEdit"
+                    StepAuthoringTool::StxTool.into(),
+                    StepAuthoringTool::StepEdit.into()
                 }
 
                 (0, 1)(1, 1) Neither (Fill, Fill): let _kfgf7kyh = HorizontalBox(padded: false) {
