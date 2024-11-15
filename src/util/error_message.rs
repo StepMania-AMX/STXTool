@@ -3,7 +3,7 @@ pub enum ErrorMessage {
     #[strum(serialize = "Couldn't retrieve primary screen size.")]
     PrimaryScreenSize,
 
-    #[strum(serialize = "Sorting is disabled for this table.")]
+    #[strum(serialize = "Sorting is disabled for this column.")]
     SortingDisabled,
 
     #[strum(serialize = "Please open a step file before you do this operation.")]

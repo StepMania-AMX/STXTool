@@ -1,34 +1,34 @@
-use crate::{DataSource, DataSourceColumn, DialogTitle, ErrorMessage};
-use libui::controls::{SelectionMode, Table, TableModel, TableParameters, Window};
+use crate::{AppState, DialogTitle, ErrorMessage, StxModeColumn};
+use libui::controls::{SelectionMode, SortIndicator, Table, TableModel, TableParameters, Window};
 use std::cell::RefCell;
 use std::rc::Rc;
 use strum::IntoEnumIterator;
 
-pub fn build_mode_table(win: Rc<RefCell<Window>>) -> (Table, Rc<RefCell<DataSource>>) {
-    let data = Rc::new(RefCell::new(DataSource::new(win.clone())));
+pub fn build_stx_mode_table(win: Rc<RefCell<Window>>) -> (Table, Rc<RefCell<AppState>>) {
+    let data = Rc::new(RefCell::new(AppState::new(win.clone())));
     let model = Rc::new(RefCell::new(TableModel::new(data.clone())));
     let params = TableParameters::new(model.clone());
     let mut table = Table::new(params);
 
-    DataSourceColumn::iter()
+    StxModeColumn::iter()
         .enumerate()
-        .take(DataSourceColumn::Selection as usize)
+        .take(StxModeColumn::Selection as usize)
         .for_each(|(i, col)| {
             let col_index = i as i32;
             match col {
-                DataSourceColumn::Mode => table.append_checkbox_text_column(
+                StxModeColumn::Mode => table.append_checkbox_text_column(
                     col.into(),
-                    DataSourceColumn::Selection as i32,
+                    StxModeColumn::Selection as i32,
                     Table::COLUMN_EDITABLE,
                     col_index,
                     Table::COLUMN_READONLY,
                 ),
-                DataSourceColumn::Difficulty => {
+                StxModeColumn::Difficulty => {
                     table.append_button_column(col.into(), col_index, Table::COLUMN_EDITABLE)
                 }
-                DataSourceColumn::ActionImport
-                | DataSourceColumn::ActionExport
-                | DataSourceColumn::ActionDelete => {
+                StxModeColumn::ActionImport
+                | StxModeColumn::ActionExport
+                | StxModeColumn::ActionDelete => {
                     table.append_button_column("", col_index, Table::COLUMN_EDITABLE);
                 }
                 _ => {
@@ -38,7 +38,8 @@ pub fn build_mode_table(win: Rc<RefCell<Window>>) -> (Table, Rc<RefCell<DataSour
             table.set_column_width(col_index, col.get_column_width());
         });
 
-    table.set_selection_mode(SelectionMode::None);
+    table.set_selection_mode(SelectionMode::ZeroOrOne);
+    table.set_sort_indicator(StxModeColumn::Mode as i32, SortIndicator::Ascending);
 
     if data.borrow().is_enabled() {
         table.enable();

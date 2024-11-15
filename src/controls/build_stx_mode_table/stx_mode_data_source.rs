@@ -1,11 +1,11 @@
-use crate::{DataSource, DataSourceColumn, DialogTitle, ErrorMessage};
+use crate::{AppState, DialogTitle, ErrorMessage, StxModeColumn};
 use libamx::LegacyMode;
 use libui::controls::{TableDataSource, TableValue, TableValueType};
 use strum::EnumCount;
 
-impl TableDataSource for DataSource {
+impl TableDataSource for AppState {
     fn num_columns(&mut self) -> i32 {
-        DataSourceColumn::COUNT as i32
+        StxModeColumn::COUNT as i32
     }
 
     fn num_rows(&mut self) -> i32 {
@@ -13,32 +13,32 @@ impl TableDataSource for DataSource {
     }
 
     fn column_type(&mut self, column: i32) -> TableValueType {
-        let column = DataSourceColumn::from_repr(column);
+        let column = StxModeColumn::from_repr(column);
         match column {
-            Some(DataSourceColumn::Selection) => TableValueType::Int,
+            Some(StxModeColumn::Selection) => TableValueType::Int,
             _ => TableValueType::String,
         }
     }
 
     fn cell(&mut self, column: i32, row: i32) -> TableValue {
-        let column = DataSourceColumn::from_repr(column);
+        let column = StxModeColumn::from_repr(column);
         let mode = LegacyMode::from_repr(row as u32);
 
         match (column, mode) {
-            (Some(DataSourceColumn::Selection), Some(mode)) => {
+            (Some(StxModeColumn::Selection), Some(mode)) => {
                 TableValue::Int(self.get_is_selected(mode).unwrap_or(0))
             }
             (Some(column), Some(mode)) => {
                 let value = match column {
-                    DataSourceColumn::Mode => Some(mode.get_id().to_string()),
-                    DataSourceColumn::Difficulty => self.get_difficulty(mode),
-                    DataSourceColumn::BPM => self.get_bpm(mode),
-                    DataSourceColumn::Delay => self.get_delay(mode),
-                    DataSourceColumn::Stats => self.get_stats(mode),
-                    DataSourceColumn::ActionImport
-                    | DataSourceColumn::ActionExport
-                    | DataSourceColumn::ActionDelete => Some(column.to_string()),
-                    DataSourceColumn::Selection => None, // should never happen, added for completeness
+                    StxModeColumn::Mode => Some(mode.get_id().to_string()),
+                    StxModeColumn::Difficulty => self.get_difficulty(mode),
+                    StxModeColumn::BPM => self.get_bpm(mode),
+                    StxModeColumn::Delay => self.get_delay(mode),
+                    StxModeColumn::Stats => self.get_stats(mode),
+                    StxModeColumn::ActionImport
+                    | StxModeColumn::ActionExport
+                    | StxModeColumn::ActionDelete => Some(column.to_string()),
+                    StxModeColumn::Selection => None, // should never happen, added for completeness
                 };
                 TableValue::String(value.unwrap_or(Self::PLACEHOLDER.to_string()))
             }
@@ -55,17 +55,17 @@ impl TableDataSource for DataSource {
             return;
         }
 
-        let column = DataSourceColumn::from_repr(column);
+        let column = StxModeColumn::from_repr(column);
         let mode = LegacyMode::from_repr(row as u32);
         match (column, mode) {
-            (Some(DataSourceColumn::ActionImport), Some(mode)) => {
+            (Some(StxModeColumn::ActionImport), Some(mode)) => {
                 self.set_next_import(Some(mode));
             }
-            (Some(DataSourceColumn::ActionExport), Some(mode)) => {
+            (Some(StxModeColumn::ActionExport), Some(mode)) => {
                 self.set_next_export(Some(mode));
             }
-            (Some(DataSourceColumn::ActionDelete), Some(mode)) => self.set_next_delete(mode),
-            (Some(DataSourceColumn::Selection), Some(mode)) => self.toggle_is_selected(mode),
+            (Some(StxModeColumn::ActionDelete), Some(mode)) => self.set_next_delete(mode),
+            (Some(StxModeColumn::Selection), Some(mode)) => self.toggle_is_selected(mode),
             (Some(column), Some(mode)) => match value {
                 TableValue::Int(value) => {
                     println!("Set cell ({}, {}) to int({})", column, mode, value);
@@ -82,6 +82,8 @@ impl TableDataSource for DataSource {
             },
             _ => {}
         }
+
+        // TODO: Remove debug logging.
         println!("{:?}", self);
     }
 }

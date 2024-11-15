@@ -7,7 +7,7 @@ use std::collections::{HashMap, HashSet};
 use std::fmt;
 use std::rc::Rc;
 
-pub struct DataSource {
+pub struct AppState {
     active_win: Rc<RefCell<Window>>,
     stx_file: Option<StxFile>,
     cache_difficulty: HashMap<LegacyMode, i32>,
@@ -19,7 +19,7 @@ pub struct DataSource {
     next_import: Option<LegacyMode>,
 }
 
-impl fmt::Debug for DataSource {
+impl fmt::Debug for AppState {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("DataSource")
             .field("active_win", &"Rc<RefCell<Window>>")
@@ -35,7 +35,7 @@ impl fmt::Debug for DataSource {
     }
 }
 
-impl DataSource {
+impl AppState {
     pub const PLACEHOLDER: &'static str = "∅";
 
     pub fn clear_cache(&mut self) {
@@ -159,7 +159,7 @@ impl DataSource {
     }
 
     pub fn new(active_win: Rc<RefCell<Window>>) -> Self {
-        DataSource {
+        AppState {
             active_win,
             stx_file: None,
             cache_difficulty: HashMap::default(),

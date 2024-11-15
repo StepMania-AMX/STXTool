@@ -1,4 +1,4 @@
-use crate::{build_global_section, build_mode_table, build_selection_row, ErrorMessage};
+use crate::{build_global_section, build_stx_mode_table, build_selection_row, ErrorMessage};
 use libui::controls::{LayoutStrategy, VerticalBox, Window, WindowType};
 use libui::UI;
 use screen_size::get_primary_screen_size;
@@ -33,7 +33,7 @@ pub fn build_main_window(ui: Rc<UI>) -> Rc<RefCell<Window>> {
 
     layout.append(build_global_section(), LayoutStrategy::Compact);
     layout.append(build_selection_row(), LayoutStrategy::Compact);
-    let (mode_table, _mode_table_data) = build_mode_table(win.clone());
+    let (mode_table, _mode_table_data) = build_stx_mode_table(win.clone());
     layout.append(mode_table, LayoutStrategy::Stretchy);
 
     win.borrow_mut().set_child(layout);

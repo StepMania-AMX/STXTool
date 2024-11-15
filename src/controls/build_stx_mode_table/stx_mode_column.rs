@@ -8,7 +8,7 @@
     strum::IntoStaticStr,
 )]
 #[repr(i32)]
-pub enum DataSourceColumn {
+pub enum StxModeColumn {
     Mode = 0,
     Difficulty = 1,
     BPM = 2,
@@ -27,9 +27,9 @@ pub enum DataSourceColumn {
     Selection = 8,
 }
 
-impl DataSourceColumn {
+impl StxModeColumn {
     pub fn get_column_width(&self) -> i32 {
-        use DataSourceColumn::*;
+        use StxModeColumn::*;
         match self {
             Mode => 50,
             Difficulty | BPM | Delay => 35,
