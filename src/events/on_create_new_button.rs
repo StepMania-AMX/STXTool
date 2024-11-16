@@ -11,14 +11,14 @@ pub fn on_create_new_button(
     table_model_rc: Rc<RefCell<TableModel>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let mut new_button = app_controls.get_new_button_mut();
+    let new_button = app_controls.get_new_button_mut();
 
     new_button.on_clicked({
         let app_controls_rc = app_controls_rc.clone();
         let app_state_rc = app_state_rc.clone();
         let table_model_rc = table_model_rc.clone();
 
-        move |button| {
+        move |_new_button| {
             let mut stx_file = StxFile::new(PathBuf::default(), StxVersion::Exceed2);
 
             stx_file

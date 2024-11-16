@@ -10,14 +10,14 @@ pub fn on_create_open_button(
     table_model_rc: Rc<RefCell<TableModel>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let mut open_button = app_controls.get_open_button_mut();
+    let open_button = app_controls.get_open_button_mut();
 
     open_button.on_clicked({
         let app_controls_rc = app_controls_rc.clone();
         let app_state_rc = app_state_rc.clone();
         let table_model_rc = table_model_rc.clone();
 
-        move |button| {
+        move |_open_button| {
             let app_controls = app_controls_rc.borrow();
 
             if let Some(stx_path) = app_controls.get_main_win().open_file() {

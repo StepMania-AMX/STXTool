@@ -9,7 +9,7 @@ pub fn on_refresh_preferred_format_combo(
     _table_model_rc: Rc<RefCell<TableModel>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let mut preferred_format_combo = app_controls.get_preferred_format_combo_mut();
+    let preferred_format_combo = app_controls.get_preferred_format_combo_mut();
 
     let app_state = app_state_rc.borrow();
     if let Some(_) = app_state.get_step_file() {

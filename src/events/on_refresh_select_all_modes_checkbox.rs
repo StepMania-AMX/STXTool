@@ -9,7 +9,7 @@ pub fn on_refresh_select_all_modes_checkbox(
     _table_model_rc: Rc<RefCell<TableModel>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let mut select_all_modes_checkbox = app_controls.get_select_all_modes_checkbox_mut();
+    let select_all_modes_checkbox = app_controls.get_select_all_modes_checkbox_mut();
 
     let app_state = app_state_rc.borrow();
     if let Some(_) = app_state.get_step_file() {
