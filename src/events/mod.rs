@@ -1,3 +1,6 @@
+mod on_change_version_combo;
+pub use on_change_version_combo::*;
+
 mod on_create_main_window;
 pub use on_create_main_window::*;
 
@@ -6,6 +9,9 @@ pub use on_create_new_button::*;
 
 mod on_create_open_button;
 pub use on_create_open_button::*;
+
+mod on_create_version_combo;
+pub use on_create_version_combo::*;
 
 mod on_refresh_export_all_button;
 pub use on_refresh_export_all_button::*;

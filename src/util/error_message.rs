@@ -3,6 +3,9 @@ pub enum ErrorMessage {
     #[strum(serialize = "Couldn't retrieve primary screen size.")]
     PrimaryScreenSize,
 
+    #[strum(serialize = "Encryption for .SEE files is not implemented yet.")]
+    SeeEncryptionNotImplemented,
+
     #[strum(serialize = "Sorting is disabled for this column.")]
     SortingDisabled,
 

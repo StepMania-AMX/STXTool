@@ -1,7 +1,7 @@
 [package]
 name = "STXTool"
 description = "UI application to work with STX files."
-version = "0.1.6"
+version = "0.1.7"
 authors = ["Aldo Fregoso <aldomx@gmail.com>"]
 edition = "2021"
 

@@ -57,6 +57,7 @@ pub fn show_main_window(ui: Rc<UI>) {
     );
 
     on_create_main_window(
+        ui.clone(),
         app_controls_rc.clone(),
         app_state_rc.clone(),
         table_model_rc.clone(),
