@@ -17,8 +17,8 @@ pub fn on_change_version_combo(
     let app_state = app_state_rc.borrow();
     let prev_version = app_state
         .get_step_file()
-        .map(|step_file| step_file.get_version())
-        .unwrap().clone();
+        .map(|step_file| step_file.get_version().clone())
+        .unwrap();
     drop(app_state);
 
     let mut app_state = app_state_rc.borrow_mut();
@@ -30,30 +30,10 @@ pub fn on_change_version_combo(
             }
             drop(app_state);
 
-            on_refresh_version_combo(
-                app_controls_rc.clone(),
-                app_state_rc.clone(),
-                table_model_rc.clone(),
-            );
-
-            on_refresh_save_tool_combo(
-                app_controls_rc.clone(),
-                app_state_rc.clone(),
-                table_model_rc.clone(),
-            );
-
-            on_refresh_save_as_button(
-                app_controls_rc.clone(),
-                app_state_rc.clone(),
-                table_model_rc.clone(),
-            );
-
-            on_refresh_save_button(
-                app_controls_rc.clone(),
-                app_state_rc.clone(),
-                table_model_rc.clone(),
-            );
-
+            on_refresh_version_combo(app_controls_rc.clone(), app_state_rc.clone());
+            on_refresh_save_tool_combo(app_controls_rc.clone(), app_state_rc.clone());
+            on_refresh_save_as_button(app_controls_rc.clone(), app_state_rc.clone());
+            on_refresh_save_button(app_controls_rc.clone(), app_state_rc.clone());
             for mode in LegacyMode::iter() {
                 on_refresh_mode_table_row(table_model_rc.clone(), mode);
             }

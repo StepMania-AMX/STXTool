@@ -1,12 +1,11 @@
 use crate::{AppControls, AppState};
-use libui::controls::{TableModel, TextEntry};
+use libui::controls::TextEntry;
 use std::cell::RefCell;
 use std::rc::Rc;
 
 pub fn on_refresh_step_artist_input(
     app_controls_rc: Rc<RefCell<AppControls>>,
     app_state_rc: Rc<RefCell<AppState>>,
-    _table_model_rc: Rc<RefCell<TableModel>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
     let step_artist_input = app_controls.get_step_artist_input_mut();

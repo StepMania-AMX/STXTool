@@ -1,22 +1,21 @@
 use crate::{AppControls, AppState};
-use libui::controls::TableModel;
+use libui::controls::TextEntry;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-pub fn on_refresh_version_combo(
+pub fn on_refresh_song_title_input(
     app_controls_rc: Rc<RefCell<AppControls>>,
     app_state_rc: Rc<RefCell<AppState>>,
-    _table_model_rc: Rc<RefCell<TableModel>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let version_combo = app_controls.get_version_combo_mut();
+    let song_title_input = app_controls.get_song_title_input_mut();
 
     let app_state = app_state_rc.borrow();
     if let Some(stx_file) = app_state.get_step_file() {
-        version_combo.enable();
-        version_combo.set_selected(stx_file.get_version() as i32);
+        song_title_input.enable();
+        song_title_input.set_value(stx_file.get_header().song_title.as_str());
     } else {
-        version_combo.disable();
-        version_combo.set_selected(-1);
+        song_title_input.disable();
+        song_title_input.set_value("");
     }
 }

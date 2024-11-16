@@ -1,5 +1,5 @@
 /// NOTE: The authoring tool field has a limit of 10 characters.
-#[derive(Default, strum::Display, strum::EnumString, strum::IntoStaticStr)]
+#[derive(Default, Eq, PartialEq, strum::Display, strum::EnumString, strum::IntoStaticStr)]
 pub enum StepAuthoringTool {
     #[default]
     #[strum(serialize = "STXTool")]

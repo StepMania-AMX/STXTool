@@ -1,8 +1,12 @@
-use crate::{on_create_new_button, on_create_open_button, on_create_version_combo, AppControls, AppState};
+use crate::{
+    on_create_new_button, on_create_open_button, on_create_save_tool_combo,
+    on_create_song_artist_input, on_create_song_title_input, on_create_step_artist_input,
+    on_create_version_combo, AppControls, AppState,
+};
 use libui::controls::TableModel;
+use libui::UI;
 use std::cell::RefCell;
 use std::rc::Rc;
-use libui::UI;
 
 pub fn on_create_main_window(
     ui: Rc<UI>,
@@ -15,12 +19,13 @@ pub fn on_create_main_window(
         app_state_rc.clone(),
         table_model_rc.clone(),
     );
-
     on_create_open_button(
         app_controls_rc.clone(),
         app_state_rc.clone(),
         table_model_rc.clone(),
     );
+    // TODO: Save button
+    // TODO: Save As button
 
     on_create_version_combo(
         ui.clone(),
@@ -28,4 +33,8 @@ pub fn on_create_main_window(
         app_state_rc.clone(),
         table_model_rc.clone(),
     );
+    on_create_save_tool_combo(ui.clone(), app_controls_rc.clone(), app_state_rc.clone());
+    on_create_song_title_input(app_controls_rc.clone(), app_state_rc.clone());
+    on_create_song_artist_input(app_controls_rc.clone(), app_state_rc.clone());
+    on_create_step_artist_input(app_controls_rc.clone(), app_state_rc.clone());
 }
