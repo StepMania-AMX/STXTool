@@ -1,4 +1,4 @@
-use crate::{AppControls, AppState, DialogTitle, ErrorMessage, StxModeColumn};
+use crate::{AppControls, DialogTitle, ErrorMessage, StxModeColumn};
 use libui::controls::{SelectionMode, SortIndicator, Table, TableModel, TableParameters};
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -6,11 +6,9 @@ use strum::IntoEnumIterator;
 
 pub fn build_stx_mode_table(
     app_controls_rc: Rc<RefCell<AppControls>>,
-    app_state_rc: Rc<RefCell<AppState>>,
+    table_model_rc: Rc<RefCell<TableModel>>,
 ) -> Table {
-    let model = Rc::new(RefCell::new(TableModel::new(app_state_rc.clone())));
-    let params = TableParameters::new(model.clone());
-    let mut table = Table::new(params);
+    let mut table = Table::new(TableParameters::new(table_model_rc.clone()));
 
     StxModeColumn::iter()
         .enumerate()
@@ -42,12 +40,6 @@ pub fn build_stx_mode_table(
 
     table.set_selection_mode(SelectionMode::ZeroOrOne);
     table.set_sort_indicator(StxModeColumn::Mode as i32, SortIndicator::Ascending);
-
-    if app_state_rc.borrow().is_enabled() {
-        table.enable();
-    } else {
-        table.disable();
-    }
 
     table.on_header_clicked({
         let app_controls_rc = app_controls_rc.clone();

@@ -134,6 +134,14 @@ impl AppState {
         Some(stats.clone())
     }
 
+    pub fn get_step_file(&self) -> Option<&StxFile> {
+        self.stx_file.as_ref()
+    }
+
+    pub fn get_step_file_mut(&mut self) -> Option<&mut StxFile> {
+        self.stx_file.as_mut()
+    }
+
     pub fn is_enabled(&self) -> bool {
         self.stx_file.is_some()
     }

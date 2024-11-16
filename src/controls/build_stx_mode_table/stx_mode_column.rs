@@ -31,10 +31,10 @@ impl StxModeColumn {
     pub fn get_column_width(&self) -> i32 {
         use StxModeColumn::*;
         match self {
-            Mode => 50,
-            Difficulty | BPM | Delay => 35,
-            Stats => 45,
-            ActionImport | ActionExport | ActionDelete => 60,
+            Mode => 45,
+            Difficulty => 40,
+            BPM | Delay | Stats => 55,
+            ActionImport | ActionExport | ActionDelete => 40,
             Selection => 0, // not visible
         }
     }

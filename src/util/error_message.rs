@@ -6,6 +6,9 @@ pub enum ErrorMessage {
     #[strum(serialize = "Sorting is disabled for this column.")]
     SortingDisabled,
 
+    #[strum(serialize = "An error occurred while reading the step file.")]
+    StepFileRead,
+
     #[strum(serialize = "Please open a step file before you do this operation.")]
     StepFileNotOpen,
 

@@ -1,13 +1,10 @@
-use crate::{AppControls, AppState, StepAuthoringTool};
+use crate::{AppControls, StepAuthoringTool};
 use libamx::StxVersion;
 use libui::controls::Group;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-pub fn build_global_section(
-    _app_controls_rc: Rc<RefCell<AppControls>>,
-    _app_state_rc: Rc<RefCell<AppState>>,
-) -> Group {
+pub fn build_global_section(app_controls_rc: Rc<RefCell<AppControls>>) -> Group {
     libui::layout! { ui,
         let group = Group("") {
             let _cnpgcopy = LayoutGrid(padded: true) {
@@ -45,13 +42,37 @@ pub fn build_global_section(
                 }
                 (1, 3)(3, 1) Neither (Fill, Fill): let step_artist_input = Entry()
 
-                (4, 0)(2, 2) Neither (Fill, Fill): let open_button = Button("Open")
+                (4, 0)(2, 1) Neither (Fill, Fill): let new_button = Button("New")
+                (4, 1)(2, 1) Neither (Fill, Fill): let open_button = Button("Open")
                 (4, 2)(2, 1) Neither (Fill, Fill): let save_button = Button("Save")
                 (4, 3)(2, 1) Neither (Fill, Fill): let save_as_button = Button("Save As…")
                 (6, 0)(1, 4) Neither (Fill, Fill): let _ygsh4d8z = Spacer()
                 (7, 0)(1, 4) Neither (Fill, Fill): let _fdadjst2 = Spacer()
             }
         }
+    }
+
+    version_combo.disable();
+    save_tool_combo.disable();
+    song_title_input.disable();
+    song_artist_input.disable();
+    step_artist_input.disable();
+    new_button.enable(); // do not disable the new button
+    open_button.enable(); // do not disable the open button
+    save_button.disable();
+    save_as_button.disable();
+
+    {
+        let mut app_controls_mut = app_controls_rc.borrow_mut();
+        app_controls_mut.set_version_combo(version_combo);
+        app_controls_mut.set_save_tool_combo(save_tool_combo);
+        app_controls_mut.set_song_title_input(song_title_input);
+        app_controls_mut.set_song_artist_input(song_artist_input);
+        app_controls_mut.set_step_artist_input(step_artist_input);
+        app_controls_mut.set_new_button(new_button);
+        app_controls_mut.set_open_button(open_button);
+        app_controls_mut.set_save_button(save_button);
+        app_controls_mut.set_save_as_button(save_as_button);
     }
 
     group

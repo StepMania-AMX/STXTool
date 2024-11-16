@@ -4,6 +4,9 @@
 mod controls;
 pub use controls::*;
 
+mod events;
+pub use events::*;
+
 mod util;
 pub use util::*;
 
