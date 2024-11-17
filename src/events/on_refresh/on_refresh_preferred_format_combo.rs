@@ -9,11 +9,12 @@ pub fn on_refresh_preferred_format_combo(
     let mut app_controls = app_controls_rc.borrow_mut();
     let preferred_format_combo = app_controls.get_preferred_format_combo();
 
-    let app_state = app_state_rc.borrow();
-    if let Some(_) = app_state.get_step_file() {
+    let app_state = app_state_rc.borrow_mut();
+    if let Some(preferred_format_index) = app_state.get_preferred_format_index() {
         preferred_format_combo.enable();
+        preferred_format_combo.set_selected(preferred_format_index);
     } else {
         preferred_format_combo.disable();
+        preferred_format_combo.set_selected(StepFormat::EXPORT_DEFAULT_INDEX as i32);
     }
-    preferred_format_combo.set_selected(StepFormat::Ucs as i32);
 }

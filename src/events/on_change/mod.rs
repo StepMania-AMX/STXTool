@@ -1,3 +1,6 @@
+mod on_change_preferred_format_combo;
+pub use on_change_preferred_format_combo::*;
+
 mod on_change_save_tool_combo;
 pub use on_change_save_tool_combo::*;
 

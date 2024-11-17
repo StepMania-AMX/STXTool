@@ -7,6 +7,9 @@ pub use on_create_new_button::*;
 mod on_create_open_button;
 pub use on_create_open_button::*;
 
+mod on_create_preferred_format_combo;
+pub use on_create_preferred_format_combo::*;
+
 mod on_create_save_tool_combo;
 pub use on_create_save_tool_combo::*;
 

@@ -1,7 +1,7 @@
 use crate::util::NoDebug;
 use crate::{
     on_refresh_select_all_modes_checkbox, on_refresh_set_bpm_or_delay_button, AppControls,
-    FloatWrapper,
+    FloatWrapper, StepFormat,
 };
 use libamx::{InitialTiming, LegacyMode, StxFile};
 use libui::controls::TableModel;
@@ -23,6 +23,7 @@ pub struct AppState {
     next_delete: HashSet<LegacyMode>,
     next_export: Option<LegacyMode>,
     next_import: Option<LegacyMode>,
+    preferred_format_index: Option<i32>,
 }
 
 impl AppState {
@@ -36,6 +37,7 @@ impl AppState {
         self.next_delete.clear();
         self.next_export = None;
         self.next_import = None;
+        self.preferred_format_index = None;
     }
 
     pub fn close_file(&mut self) {
@@ -149,6 +151,13 @@ impl AppState {
         }
     }
 
+    pub fn get_preferred_format_index(&self) -> Option<i32> {
+        if self.stx_file.is_none() {
+            return None;
+        }
+        self.preferred_format_index.or(Some(-1))
+    }
+
     pub fn get_stats(&mut self, mode: LegacyMode) -> Option<String> {
         if self.stx_file.is_none() {
             return None;
@@ -196,12 +205,14 @@ impl AppState {
             next_delete: HashSet::default(),
             next_export: None,
             next_import: None,
+            preferred_format_index: None,
         }
     }
 
     pub fn open_file(&mut self, file: StxFile) {
         self.stx_file = Some(file);
         self.clear_cache();
+        self.preferred_format_index = Some(StepFormat::EXPORT_DEFAULT_INDEX as i32);
     }
 
     pub fn set_next_delete(&mut self, mode: LegacyMode) {
@@ -227,6 +238,32 @@ impl AppState {
             return;
         }
         self.next_import = mode;
+    }
+
+    pub fn set_preferred_format(&mut self, preferred_format: Option<StepFormat>) {
+        if self.stx_file.is_none() {
+            return;
+        }
+        match preferred_format {
+            Some(preferred_format) => {
+                self.preferred_format_index = StepFormat::EXPORT_FORMAT
+                    .iter()
+                    .position(|&format| format == preferred_format)
+                    .map(|index| index as i32)
+            }
+            None => self.preferred_format_index = None,
+        }
+    }
+
+    pub fn set_preferred_format_index(&mut self, index: i32) {
+        if self.stx_file.is_none() {
+            return;
+        }
+        if index >= 0 && (index as usize) < StepFormat::EXPORT_FORMAT.len() {
+            self.preferred_format_index = Some(index);
+        } else {
+            self.preferred_format_index = None;
+        }
     }
 
     pub fn set_select_all(&mut self) {

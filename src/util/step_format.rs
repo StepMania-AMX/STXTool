@@ -3,6 +3,7 @@
 #[derive(
     Clone,
     Copy,
+    Debug,
     Eq,
     PartialEq,
     strum::Display,
@@ -67,6 +68,21 @@ pub enum StepFormat {
 }
 
 impl StepFormat {
+    pub const EXPORT_DEFAULT: StepFormat = StepFormat::Ucs;
+
+    pub const EXPORT_DEFAULT_INDEX: usize = 6;
+
+    pub const EXPORT_FORMAT: [StepFormat; 8] = [
+        StepFormat::Stf1024,
+        StepFormat::Stf2048,
+        StepFormat::KsfDm,
+        StepFormat::Nx10,
+        StepFormat::Nx20,
+        StepFormat::KsfAmx,
+        StepFormat::Ucs,
+        StepFormat::UcsAmx,
+    ];
+
     pub fn add_extension(&self, filename: &str) -> String {
         let extension = match self {
             StepFormat::Stf1024 => "STF",
@@ -102,5 +118,13 @@ impl StepFormat {
             | StepFormat::Ucs
             | StepFormat::UcsAmx => format!("{}.{}", filename, extension),
         }
+    }
+
+    pub fn init() {
+        assert_eq!(
+            Self::EXPORT_FORMAT[Self::EXPORT_DEFAULT_INDEX],
+            Self::EXPORT_DEFAULT,
+            "EXPORT_DEFAULT_INDEX mismatch."
+        );
     }
 }

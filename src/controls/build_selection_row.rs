@@ -1,6 +1,6 @@
 #![allow(unused_mut)]
 
-use crate::{AppControls, StepFormat};
+use crate::AppControls;
 use libui::controls::HorizontalBox;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -11,24 +11,8 @@ pub fn build_selection_row(app_controls_rc: Rc<RefCell<AppControls>>) -> Horizon
             Compact: let select_all_modes_checkbox = Checkbox("")
             Compact: let set_bpm_or_delay_button = Button("Set BPM or Delay")
             Stretchy: let _9i8x0snq = Spacer()
-            Compact: let preferred_format_combo = Combobox(selected: StepFormat::Ucs as i32) {
-                StepFormat::Stf1024.into(),
-                StepFormat::Stf2048.into(),
-                StepFormat::St2.into(),
-                StepFormat::Not4.into(),
-                StepFormat::Not5.into(),
-                StepFormat::KsfKiu.into(),
-                StepFormat::Sm.into(),
-                StepFormat::KsfDm.into(),
-                StepFormat::Nx10.into(),
-                StepFormat::Sma.into(),
-                StepFormat::KsfAmx.into(),
-                StepFormat::Nx20.into(),
-                StepFormat::Ssc.into(),
-                StepFormat::Ucs.into(),
-                StepFormat::SscInfinity.into(),
-                StepFormat::UcsAmx.into(),
-                StepFormat::SscStepF2.into()
+            Compact: let preferred_format_combo = Combobox() {
+                // See `on_create_preferred_format_combo` for entries.
             }
             Compact: let export_all_button = Button("Export All")
         }

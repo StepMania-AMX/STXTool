@@ -1,7 +1,8 @@
 use crate::{
-    on_create_new_button, on_create_open_button, on_create_save_tool_combo,
-    on_create_select_all_modes_checkbox, on_create_song_artist_input, on_create_song_title_input,
-    on_create_step_artist_input, on_create_version_combo, AppControls, AppState,
+    on_create_new_button, on_create_open_button, on_create_preferred_format_combo,
+    on_create_save_tool_combo, on_create_select_all_modes_checkbox, on_create_song_artist_input,
+    on_create_song_title_input, on_create_step_artist_input, on_create_version_combo, AppControls,
+    AppState,
 };
 use libui::controls::TableModel;
 use libui::UI;
@@ -44,4 +45,7 @@ pub fn on_create_main_window(
         app_state_rc.clone(),
         table_model_rc.clone(),
     );
+    // TODO: Set BPM or Delay button
+    on_create_preferred_format_combo(ui.clone(), app_controls_rc.clone(), app_state_rc.clone())
+    // TODO: Export All button
 }
