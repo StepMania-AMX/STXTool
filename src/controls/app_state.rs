@@ -1,10 +1,14 @@
 use crate::util::NoDebug;
-use crate::{AppControls, FloatWrapper};
+use crate::{
+    on_refresh_select_all_modes_checkbox, on_refresh_set_bpm_or_delay_button, AppControls,
+    FloatWrapper,
+};
 use libamx::{InitialTiming, LegacyMode, StxFile};
 use statistical::mode as statistical_mode;
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
+use strum::{EnumCount, IntoEnumIterator};
 
 #[derive(Debug)]
 pub struct AppState {
@@ -115,6 +119,20 @@ impl AppState {
         Some(self.cache_selection.contains(&mode) as i32)
     }
 
+    pub fn get_is_selected_all(&self) -> Option<bool> {
+        if self.stx_file.is_none() {
+            return None;
+        }
+        Some(self.cache_selection.len() == LegacyMode::COUNT)
+    }
+
+    pub fn get_is_selected_none(&self) -> Option<bool> {
+        if self.stx_file.is_none() {
+            return None;
+        }
+        Some(self.cache_selection.is_empty())
+    }
+
     pub fn get_stats(&mut self, mode: LegacyMode) -> Option<String> {
         if self.stx_file.is_none() {
             return None;
@@ -173,6 +191,22 @@ impl AppState {
         self.clear_cache();
     }
 
+    pub fn set_select_all(&mut self) {
+        if self.stx_file.is_none() {
+            return;
+        }
+        for mode in LegacyMode::iter() {
+            self.cache_selection.insert(mode);
+        }
+    }
+
+    pub fn set_select_none(&mut self) {
+        if self.stx_file.is_none() {
+            return;
+        }
+        self.cache_selection.clear();
+    }
+
     pub fn set_next_delete(&mut self, mode: LegacyMode) {
         if self.stx_file.is_none() {
             return;
@@ -207,5 +241,15 @@ impl AppState {
         } else {
             self.cache_selection.insert(mode);
         }
+        on_refresh_select_all_modes_checkbox(
+            self.ptr.0.clone(),
+            self.stx_file.is_some(),
+            self.cache_selection.len() == LegacyMode::COUNT,
+        );
+        on_refresh_set_bpm_or_delay_button(
+            self.ptr.0.clone(),
+            self.stx_file.is_some(),
+            self.cache_selection.is_empty(),
+        )
     }
 }
