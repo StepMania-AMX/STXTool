@@ -48,7 +48,9 @@ impl TableDataSource for AppState {
 
     fn set_cell(&mut self, column: i32, row: i32, value: TableValue) {
         if !self.is_enabled() {
-            self.modal_err(
+            let app_controls_rc = self.get_app_controls_rc();
+            let mut app_controls = app_controls_rc.borrow_mut();
+            app_controls.get_main_win().modal_err(
                 DialogTitle::OperationNotAllowed.into(),
                 ErrorMessage::StepFileNotOpen.into(),
             );

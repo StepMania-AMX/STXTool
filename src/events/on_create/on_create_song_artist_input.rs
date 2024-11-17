@@ -8,7 +8,7 @@ pub fn on_create_song_artist_input(
     app_state_rc: Rc<RefCell<AppState>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let song_artist_input = app_controls.get_song_artist_input_mut();
+    let song_artist_input = app_controls.get_song_artist_input();
 
     song_artist_input.on_changed({
         let app_controls_rc = app_controls_rc.clone();

@@ -12,6 +12,9 @@ pub fn show_main_window(ui: Rc<UI>) {
     let app_controls_rc = Rc::new(RefCell::new(AppControls::default()));
     let app_state_rc = Rc::new(RefCell::new(AppState::new(app_controls_rc.clone())));
     let table_model_rc = Rc::new(RefCell::new(TableModel::new(app_state_rc.clone())));
+    let mut app_state = app_state_rc.borrow_mut();
+    app_state.set_table_model_rc(table_model_rc.clone());
+    drop(app_state);
 
     let width = 560_i32;
     let height = 500_i32;
@@ -63,8 +66,8 @@ pub fn show_main_window(ui: Rc<UI>) {
         table_model_rc.clone(),
     );
 
-    let mut app_controls_mut = app_controls_rc.borrow_mut();
-    let win = app_controls_mut.get_main_win_mut();
+    let mut app_controls = app_controls_rc.borrow_mut();
+    let win = app_controls.get_main_win();
 
     win.set_child(layout);
 

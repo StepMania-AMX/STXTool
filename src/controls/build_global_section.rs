@@ -62,18 +62,16 @@ pub fn build_global_section(app_controls_rc: Rc<RefCell<AppControls>>) -> Group 
     save_button.disable();
     save_as_button.disable();
 
-    {
-        let mut app_controls_mut = app_controls_rc.borrow_mut();
-        app_controls_mut.set_version_combo(version_combo);
-        app_controls_mut.set_save_tool_combo(save_tool_combo);
-        app_controls_mut.set_song_title_input(song_title_input);
-        app_controls_mut.set_song_artist_input(song_artist_input);
-        app_controls_mut.set_step_artist_input(step_artist_input);
-        app_controls_mut.set_new_button(new_button);
-        app_controls_mut.set_open_button(open_button);
-        app_controls_mut.set_save_button(save_button);
-        app_controls_mut.set_save_as_button(save_as_button);
-    }
+    let mut app_controls = app_controls_rc.borrow_mut();
+    app_controls.set_version_combo(version_combo);
+    app_controls.set_save_tool_combo(save_tool_combo);
+    app_controls.set_song_title_input(song_title_input);
+    app_controls.set_song_artist_input(song_artist_input);
+    app_controls.set_step_artist_input(step_artist_input);
+    app_controls.set_new_button(new_button);
+    app_controls.set_open_button(open_button);
+    app_controls.set_save_button(save_button);
+    app_controls.set_save_as_button(save_as_button);
 
     group
 }

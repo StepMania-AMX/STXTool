@@ -44,7 +44,7 @@ pub fn build_stx_mode_table(
     table.on_header_clicked({
         let app_controls_rc = app_controls_rc.clone();
         move |_table, _column| {
-            app_controls_rc.borrow().get_main_win().modal_err(
+            app_controls_rc.borrow_mut().get_main_win().modal_err(
                 DialogTitle::OperationNotAllowed.into(),
                 ErrorMessage::SortingDisabled.into(),
             );

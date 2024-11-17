@@ -39,13 +39,11 @@ pub fn build_selection_row(app_controls_rc: Rc<RefCell<AppControls>>) -> Horizon
     preferred_format_combo.disable();
     export_all_button.disable();
 
-    {
-        let mut app_controls_mut = app_controls_rc.borrow_mut();
-        app_controls_mut.set_select_all_modes_checkbox(select_all_modes_checkbox);
-        app_controls_mut.set_set_bpm_or_delay_button(set_bpm_or_delay_button);
-        app_controls_mut.set_preferred_format_combo(preferred_format_combo);
-        app_controls_mut.set_export_all_button(export_all_button);
-    }
+    let mut app_controls = app_controls_rc.borrow_mut();
+    app_controls.set_select_all_modes_checkbox(select_all_modes_checkbox);
+    app_controls.set_set_bpm_or_delay_button(set_bpm_or_delay_button);
+    app_controls.set_preferred_format_combo(preferred_format_combo);
+    app_controls.set_export_all_button(export_all_button);
 
     selection_row
 }

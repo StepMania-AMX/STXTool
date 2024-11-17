@@ -7,7 +7,7 @@ pub fn on_refresh_version_combo(
     app_state_rc: Rc<RefCell<AppState>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let version_combo = app_controls.get_version_combo_mut();
+    let version_combo = app_controls.get_version_combo();
 
     let app_state = app_state_rc.borrow();
     if let Some(stx_file) = app_state.get_step_file() {

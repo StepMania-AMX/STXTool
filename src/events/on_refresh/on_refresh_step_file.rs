@@ -21,22 +21,17 @@ pub fn on_refresh_step_file(
     on_refresh_song_title_input(app_controls_rc.clone(), app_state_rc.clone());
     on_refresh_song_artist_input(app_controls_rc.clone(), app_state_rc.clone());
     on_refresh_step_artist_input(app_controls_rc.clone(), app_state_rc.clone());
+
+    // `new_button` doesn't need to be refreshed.
+    // `open_button` doesn't need to be refreshed.
     on_refresh_save_as_button(app_controls_rc.clone(), app_state_rc.clone());
     on_refresh_save_button(app_controls_rc.clone(), app_state_rc.clone());
 
-    {
-        let app_state = app_state_rc.borrow();
-        on_refresh_select_all_modes_checkbox(
-            app_controls_rc.clone(),
-            app_state.get_step_file().is_some(),
-            app_state.get_is_selected_all().unwrap_or(false),
-        );
-        on_refresh_set_bpm_or_delay_button(
-            app_controls_rc.clone(),
-            app_state.get_step_file().is_some(),
-            app_state.get_is_selected_none().unwrap_or(false),
-        );
-    }
+    let app_state = app_state_rc.borrow();
+    on_refresh_select_all_modes_checkbox(app_controls_rc.clone(), &*app_state);
+    on_refresh_set_bpm_or_delay_button(app_controls_rc.clone(), &*app_state);
+    drop(app_state);
+
     on_refresh_preferred_format_combo(app_controls_rc.clone(), app_state_rc.clone());
     on_refresh_export_all_button(app_controls_rc.clone(), app_state_rc.clone());
     for mode in LegacyMode::iter() {

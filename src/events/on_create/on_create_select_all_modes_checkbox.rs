@@ -11,23 +11,22 @@ pub fn on_create_select_all_modes_checkbox(
     table_model_rc: Rc<RefCell<TableModel>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let select_all_modes_checkbox = app_controls.get_select_all_modes_checkbox_mut();
+    let select_all_modes_checkbox = app_controls.get_select_all_modes_checkbox();
 
     select_all_modes_checkbox.on_toggled(&ui, {
         let app_controls_rc = app_controls_rc.clone();
         let app_state_rc = app_state_rc.clone();
         let table_model_rc = table_model_rc.clone();
         move |checkbox_value| {
-            let should_honor_checkbox_value = {
+            let is_selected_partial = {
                 let app_state = app_state_rc.borrow();
-                checkbox_value && app_state.get_is_selected_none().unwrap_or(false)
-                    || !checkbox_value && app_state.get_is_selected_all().unwrap_or(false)
+                app_state.get_is_selected_partial().unwrap_or(false)
             };
             on_change_select_all_modes_checkbox(
                 app_controls_rc.clone(),
                 app_state_rc.clone(),
                 table_model_rc.clone(),
-                checkbox_value && should_honor_checkbox_value,
+                checkbox_value && !is_selected_partial,
             )
         }
     });

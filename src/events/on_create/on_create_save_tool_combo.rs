@@ -9,7 +9,7 @@ pub fn on_create_save_tool_combo(
     app_state_rc: Rc<RefCell<AppState>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let save_tool_combo = app_controls.get_save_tool_combo_mut();
+    let save_tool_combo = app_controls.get_save_tool_combo();
 
     save_tool_combo.on_changed(&ui, {
         let app_controls_rc = app_controls_rc.clone();

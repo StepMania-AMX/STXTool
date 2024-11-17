@@ -8,7 +8,7 @@ pub fn on_refresh_save_tool_combo(
     app_state_rc: Rc<RefCell<AppState>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let save_tool_combo = app_controls.get_save_tool_combo_mut();
+    let save_tool_combo = app_controls.get_save_tool_combo();
 
     let app_state = app_state_rc.borrow();
     match app_state.get_step_file() {

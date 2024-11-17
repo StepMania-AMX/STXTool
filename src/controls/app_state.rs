@@ -4,6 +4,7 @@ use crate::{
     FloatWrapper,
 };
 use libamx::{InitialTiming, LegacyMode, StxFile};
+use libui::controls::TableModel;
 use statistical::mode as statistical_mode;
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
@@ -12,7 +13,8 @@ use strum::{EnumCount, IntoEnumIterator};
 
 #[derive(Debug)]
 pub struct AppState {
-    ptr: NoDebug<Rc<RefCell<AppControls>>>,
+    app_controls_rc: NoDebug<Rc<RefCell<AppControls>>>,
+    table_model_rc: Option<NoDebug<Rc<RefCell<TableModel>>>>,
     stx_file: Option<StxFile>,
     cache_difficulty: HashMap<LegacyMode, i32>,
     cache_selection: HashSet<LegacyMode>,
@@ -39,6 +41,10 @@ impl AppState {
     pub fn close_file(&mut self) {
         self.stx_file = None;
         self.clear_cache();
+    }
+
+    pub fn get_app_controls_rc(&self) -> Rc<RefCell<AppControls>> {
+        self.app_controls_rc.0.clone()
     }
 
     pub fn get_bpm(&mut self, mode: LegacyMode) -> Option<String> {
@@ -133,6 +139,16 @@ impl AppState {
         Some(self.cache_selection.is_empty())
     }
 
+    pub fn get_is_selected_partial(&self) -> Option<bool> {
+        if self.stx_file.is_none() {
+            return None;
+        }
+        match self.cache_selection.len() {
+            sel if sel > 0 && sel < LegacyMode::COUNT => Some(true),
+            _ => Some(false),
+        }
+    }
+
     pub fn get_stats(&mut self, mode: LegacyMode) -> Option<String> {
         if self.stx_file.is_none() {
             return None;
@@ -160,21 +176,18 @@ impl AppState {
         self.stx_file.as_mut()
     }
 
+    pub fn get_table_model_rc(&self) -> Rc<RefCell<TableModel>> {
+        self.table_model_rc.as_ref().unwrap().0.clone()
+    }
+
     pub fn is_enabled(&self) -> bool {
         self.stx_file.is_some()
     }
 
-    pub fn modal_err(&self, title: &str, description: &str) {
-        self.ptr
-            .0
-            .borrow()
-            .get_main_win()
-            .modal_err(title, description);
-    }
-
-    pub fn new(ptr: Rc<RefCell<AppControls>>) -> Self {
+    pub fn new(app_controls_rc: Rc<RefCell<AppControls>>) -> Self {
         AppState {
-            ptr: NoDebug(ptr),
+            app_controls_rc: NoDebug(app_controls_rc),
+            table_model_rc: None,
             stx_file: None,
             cache_difficulty: HashMap::default(),
             cache_selection: HashSet::default(),
@@ -189,22 +202,6 @@ impl AppState {
     pub fn open_file(&mut self, file: StxFile) {
         self.stx_file = Some(file);
         self.clear_cache();
-    }
-
-    pub fn set_select_all(&mut self) {
-        if self.stx_file.is_none() {
-            return;
-        }
-        for mode in LegacyMode::iter() {
-            self.cache_selection.insert(mode);
-        }
-    }
-
-    pub fn set_select_none(&mut self) {
-        if self.stx_file.is_none() {
-            return;
-        }
-        self.cache_selection.clear();
     }
 
     pub fn set_next_delete(&mut self, mode: LegacyMode) {
@@ -232,6 +229,26 @@ impl AppState {
         self.next_import = mode;
     }
 
+    pub fn set_select_all(&mut self) {
+        if self.stx_file.is_none() {
+            return;
+        }
+        for mode in LegacyMode::iter() {
+            self.cache_selection.insert(mode);
+        }
+    }
+
+    pub fn set_select_none(&mut self) {
+        if self.stx_file.is_none() {
+            return;
+        }
+        self.cache_selection.clear();
+    }
+
+    pub fn set_table_model_rc(&mut self, table_model_rc: Rc<RefCell<TableModel>>) {
+        self.table_model_rc = Some(NoDebug(table_model_rc));
+    }
+
     pub fn toggle_is_selected(&mut self, mode: LegacyMode) {
         if self.stx_file.is_none() {
             return;
@@ -241,15 +258,7 @@ impl AppState {
         } else {
             self.cache_selection.insert(mode);
         }
-        on_refresh_select_all_modes_checkbox(
-            self.ptr.0.clone(),
-            self.stx_file.is_some(),
-            self.cache_selection.len() == LegacyMode::COUNT,
-        );
-        on_refresh_set_bpm_or_delay_button(
-            self.ptr.0.clone(),
-            self.stx_file.is_some(),
-            self.cache_selection.is_empty(),
-        )
+        on_refresh_select_all_modes_checkbox(self.get_app_controls_rc(), self);
+        on_refresh_set_bpm_or_delay_button(self.get_app_controls_rc(), self);
     }
 }

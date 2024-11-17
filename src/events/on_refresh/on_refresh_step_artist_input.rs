@@ -8,7 +8,7 @@ pub fn on_refresh_step_artist_input(
     app_state_rc: Rc<RefCell<AppState>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let step_artist_input = app_controls.get_step_artist_input_mut();
+    let step_artist_input = app_controls.get_step_artist_input();
 
     let app_state = app_state_rc.borrow();
     if let Some(stx_file) = app_state.get_step_file() {

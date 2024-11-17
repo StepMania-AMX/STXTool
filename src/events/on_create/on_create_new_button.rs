@@ -11,7 +11,7 @@ pub fn on_create_new_button(
     table_model_rc: Rc<RefCell<TableModel>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let new_button = app_controls.get_new_button_mut();
+    let new_button = app_controls.get_new_button();
 
     new_button.on_clicked({
         let app_controls_rc = app_controls_rc.clone();

@@ -8,7 +8,7 @@ pub fn on_refresh_save_as_button(
     app_state_rc: Rc<RefCell<AppState>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let save_as_button = app_controls.get_save_as_button_mut();
+    let save_as_button = app_controls.get_save_as_button();
 
     let app_state = app_state_rc.borrow();
     match app_state.get_step_file() {

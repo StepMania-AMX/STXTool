@@ -12,7 +12,7 @@ pub fn on_create_version_combo(
     table_model_rc: Rc<RefCell<TableModel>>,
 ) {
     let mut app_controls = app_controls_rc.borrow_mut();
-    let version_combo = app_controls.get_version_combo_mut();
+    let version_combo = app_controls.get_version_combo();
 
     version_combo.on_selected(&ui, {
         let app_controls_rc = app_controls_rc.clone();
@@ -22,8 +22,8 @@ pub fn on_create_version_combo(
             match StxVersion::from_repr(combo_option as u32) {
                 Some(mut version) => {
                     if version == StxVersion::NewXenesis {
-                        let app_state = app_state_rc.borrow();
-                        app_state.modal_err(
+                        let mut app_controls = app_controls_rc.borrow_mut();
+                        app_controls.get_main_win().modal_err(
                             DialogTitle::OperationNotAllowed.into(),
                             ErrorMessage::SeeEncryptionNotImplemented.into(),
                         );
