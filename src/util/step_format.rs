@@ -14,59 +14,63 @@
 )]
 #[repr(i32)]
 pub enum StepFormat {
-    #[strum(serialize = "STF")]
-    Stf = 0,
+    #[strum(serialize = "STF (1st)")]
+    Stf1024 = 0,
+
+    #[strum(serialize = "STF (2nd)")]
+    Stf2048 = 1,
 
     #[strum(serialize = "ST2")]
-    St2 = 1,
+    St2 = 2,
 
     #[strum(serialize = "NOT4")]
-    Not4 = 2,
+    Not4 = 3,
 
     #[strum(serialize = "NOT5")]
-    Not5 = 3,
+    Not5 = 4,
 
     #[strum(serialize = "KSF (KIU)")]
-    KsfKiu = 4,
+    KsfKiu = 5,
 
     #[strum(serialize = "SM")]
-    Sm = 5,
+    Sm = 6,
 
     #[strum(serialize = "KSF (DM)")]
-    KsfDm = 6,
+    KsfDm = 7,
 
     #[strum(serialize = "NX10")]
-    Nx10 = 7,
+    Nx10 = 8,
 
     #[strum(serialize = "SMA")]
-    Sma = 8,
+    Sma = 9,
 
     #[strum(serialize = "KSF (AMX)")]
-    KsfAmx = 9,
+    KsfAmx = 10,
 
     #[strum(serialize = "NX20")]
-    Nx20 = 10,
+    Nx20 = 11,
 
     #[strum(serialize = "SSC")]
-    Ssc = 11,
+    Ssc = 12,
 
     #[strum(serialize = "UCS")]
-    Ucs = 12,
+    Ucs = 13,
 
     #[strum(serialize = "SSC (Infinity)")]
-    SscInfinity = 13,
+    SscInfinity = 14,
 
     #[strum(serialize = "UCS (AMX)")]
-    UcsAmx = 14,
+    UcsAmx = 15,
 
     #[strum(serialize = "SSC (StepF2)")]
-    SscStepF2 = 15,
+    SscStepF2 = 16,
 }
 
 impl StepFormat {
     pub fn add_extension(&self, filename: &str) -> String {
         let extension = match self {
-            StepFormat::Stf => "STF",
+            StepFormat::Stf1024 => "STF",
+            StepFormat::Stf2048 => "STF",
             StepFormat::St2 => "ST2",
             StepFormat::Not4 => "NOT",
             StepFormat::Not5 => "NOT",
@@ -80,7 +84,8 @@ impl StepFormat {
             StepFormat::Ucs | StepFormat::UcsAmx => "ucs",
         };
         match self {
-            StepFormat::Stf
+            StepFormat::Stf1024
+            | StepFormat::Stf2048
             | StepFormat::St2
             | StepFormat::Not4
             | StepFormat::Not5

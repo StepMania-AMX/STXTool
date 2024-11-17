@@ -12,7 +12,8 @@ pub fn build_selection_row(app_controls_rc: Rc<RefCell<AppControls>>) -> Horizon
             Compact: let set_bpm_or_delay_button = Button("Set BPM or Delay")
             Stretchy: let _9i8x0snq = Spacer()
             Compact: let preferred_format_combo = Combobox(selected: StepFormat::Ucs as i32) {
-                StepFormat::Stf.into(),
+                StepFormat::Stf1024.into(),
+                StepFormat::Stf2048.into(),
                 StepFormat::St2.into(),
                 StepFormat::Not4.into(),
                 StepFormat::Not5.into(),
