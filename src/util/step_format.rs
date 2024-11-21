@@ -1,5 +1,8 @@
 #![allow(unreachable_patterns)]
 
+use libamx::{LegacyMode, StxStepData, UcsFile, UcsFormat, UcsStepData};
+use std::path::PathBuf;
+
 #[derive(
     Clone,
     Copy,
@@ -126,5 +129,34 @@ impl StepFormat {
             Self::EXPORT_DEFAULT,
             "EXPORT_DEFAULT_INDEX mismatch."
         );
+    }
+
+    pub fn is_mode_compatible(&self, mode: &LegacyMode) -> bool {
+        match (self, mode) {
+            (StepFormat::Nx10 | StepFormat::Nx20 | StepFormat::UcsAmx, LegacyMode::LightMap) => {
+                true
+            }
+            (_, LegacyMode::LightMap) => false,
+            _ => true,
+        }
+    }
+
+    pub fn save_stx_step_data(
+        &self,
+        stx_step_data: &StxStepData,
+        out_folder: &PathBuf,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        match self {
+            StepFormat::Ucs => {
+                let ucs_format = UcsFormat::V1;
+                let ucs_step_data = UcsStepData::from_stx_step_data(&stx_step_data, ucs_format)?;
+                let ucs_file = UcsFile::new(ucs_format, ucs_step_data);
+                let filename = self.add_extension(stx_step_data.mode.get_id());
+                let out_path = out_folder.join(filename);
+                ucs_file.to_file(out_path.to_str().ok_or("Invalid path")?)?;
+                Ok(())
+            }
+            _ => Err(format!("Unsupported step format: {}", self).into()),
+        }
     }
 }
