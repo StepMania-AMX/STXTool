@@ -18,11 +18,10 @@ pub struct AppState {
     stx_file: Option<StxFile>,
     cache_difficulty: HashMap<LegacyMode, i32>,
     cache_selection: HashSet<LegacyMode>,
-    cache_stats: HashMap<LegacyMode, String>,
+    cache_splits: HashMap<LegacyMode, String>,
     cache_timing: HashMap<LegacyMode, InitialTiming>,
     next_delete: HashSet<LegacyMode>,
-    next_export: Option<LegacyMode>,
-    next_import: Option<LegacyMode>,
+    next_edit: Option<LegacyMode>,
     preferred_format_index: Option<i32>,
 }
 
@@ -32,12 +31,15 @@ impl AppState {
     pub fn clear_cache(&mut self) {
         self.cache_difficulty.clear();
         self.cache_selection.clear();
-        self.cache_stats.clear();
+        self.cache_splits.clear();
         self.cache_timing.clear();
         self.next_delete.clear();
-        self.next_export = None;
-        self.next_import = None;
+        self.next_edit = None;
         self.preferred_format_index = None;
+    }
+
+    pub fn clear_next_edit(&mut self) {
+        self.next_edit = None;
     }
 
     pub fn close_file(&mut self) {
@@ -120,6 +122,10 @@ impl AppState {
         }
     }
 
+    pub fn get_is_deleted(&self, mode: LegacyMode) -> bool {
+        self.next_delete.contains(&mode)
+    }
+
     pub fn get_is_selected(&self, mode: LegacyMode) -> Option<i32> {
         if self.stx_file.is_none() {
             return None;
@@ -158,23 +164,29 @@ impl AppState {
         self.preferred_format_index.or(Some(-1))
     }
 
-    pub fn get_stats(&mut self, mode: LegacyMode) -> Option<String> {
+    pub fn get_splits(&mut self, mode: LegacyMode) -> Option<String> {
         if self.stx_file.is_none() {
             return None;
         }
-        let stats = self.cache_stats.entry(mode).or_insert_with(|| {
+        let splits = self.cache_splits.entry(mode).or_insert_with(|| {
             let stx_file = self.stx_file.as_ref().unwrap();
             stx_file
                 .get_mode_info(mode)
-                .map(|info| (info.get_num_splits(), info.count_blocks()))
-                .map(|(num_splits, num_blocks)| format!("{}s / {}b", num_splits, num_blocks))
+                .map(|info| {
+                    let num_splits = info.get_num_splits();
+                    if num_splits != info.count_blocks() {
+                        format!("{} DV", num_splits)
+                    } else {
+                        num_splits.to_string()
+                    }
+                })
                 .unwrap_or(Self::PLACEHOLDER.to_string())
         });
-        if stats == Self::PLACEHOLDER {
+        if splits == Self::PLACEHOLDER {
             return None;
         }
 
-        Some(stats.clone())
+        Some(splits.clone())
     }
 
     pub fn get_step_file(&self) -> Option<&StxFile> {
@@ -200,11 +212,10 @@ impl AppState {
             stx_file: None,
             cache_difficulty: HashMap::default(),
             cache_selection: HashSet::default(),
-            cache_stats: HashMap::default(),
+            cache_splits: HashMap::default(),
             cache_timing: HashMap::default(),
             next_delete: HashSet::default(),
-            next_export: None,
-            next_import: None,
+            next_edit: None,
             preferred_format_index: None,
         }
     }
@@ -226,18 +237,11 @@ impl AppState {
         }
     }
 
-    pub fn set_next_export(&mut self, mode: Option<LegacyMode>) {
+    pub fn set_next_edit(&mut self, mode: LegacyMode) {
         if self.stx_file.is_none() {
             return;
         }
-        self.next_export = mode;
-    }
-
-    pub fn set_next_import(&mut self, mode: Option<LegacyMode>) {
-        if self.stx_file.is_none() {
-            return;
-        }
-        self.next_import = mode;
+        self.next_edit = Some(mode);
     }
 
     pub fn set_preferred_format(&mut self, preferred_format: Option<StepFormat>) {

@@ -13,29 +13,25 @@ pub enum StxModeColumn {
     Difficulty = 1,
     BPM = 2,
     Delay = 3,
-    Stats = 4,
+    Splits = 4,
 
-    #[strum(serialize = "Import")]
-    ActionImport = 5,
-
-    #[strum(serialize = "Export")]
-    ActionExport = 6,
+    #[strum(serialize = "Edit")]
+    ActionEdit = 5,
 
     #[strum(serialize = "Delete")]
-    ActionDelete = 7,
+    ActionDelete = 6,
 
-    Selection = 8,
+    Selection = 7,
+    Color = 8,
 }
 
 impl StxModeColumn {
     pub fn get_column_width(&self) -> i32 {
         use StxModeColumn::*;
         match self {
-            Mode => 45,
-            Difficulty => 40,
-            BPM | Delay | Stats => 55,
-            ActionImport | ActionExport | ActionDelete => 40,
-            Selection => 0, // not visible
+            Mode | Difficulty | BPM | Delay | Splits | ActionEdit => 55,
+            ActionDelete => 65,
+            Selection | Color => 0, // not visible
         }
     }
 }

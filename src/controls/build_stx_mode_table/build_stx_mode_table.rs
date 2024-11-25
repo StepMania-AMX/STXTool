@@ -1,5 +1,5 @@
 use crate::{AppControls, DialogTitle, ErrorMessage, StxModeColumn};
-use libui::controls::{SelectionMode, SortIndicator, Table, TableModel, TableParameters};
+use libui::controls::{SelectionMode, Table, TableModel, TableParameters, TextColumnParameters};
 use std::cell::RefCell;
 use std::rc::Rc;
 use strum::IntoEnumIterator;
@@ -26,20 +26,24 @@ pub fn build_stx_mode_table(
                 StxModeColumn::Difficulty => {
                     table.append_button_column(col.into(), col_index, Table::COLUMN_EDITABLE)
                 }
-                StxModeColumn::ActionImport
-                | StxModeColumn::ActionExport
-                | StxModeColumn::ActionDelete => {
+                StxModeColumn::ActionEdit | StxModeColumn::ActionDelete => {
                     table.append_button_column("", col_index, Table::COLUMN_EDITABLE);
                 }
                 _ => {
-                    table.append_text_column(col.into(), col_index, Table::COLUMN_READONLY);
+                    table.append_text_column_with_params(
+                        col.into(),
+                        col_index,
+                        Table::COLUMN_READONLY,
+                        TextColumnParameters {
+                            text_color_column: StxModeColumn::Color as i32,
+                        },
+                    );
                 }
             }
             table.set_column_width(col_index, col.get_column_width());
         });
 
     table.set_selection_mode(SelectionMode::ZeroOrOne);
-    table.set_sort_indicator(StxModeColumn::Mode as i32, SortIndicator::Ascending);
 
     table.on_header_clicked({
         let app_controls_rc = app_controls_rc.clone();

@@ -1,3 +1,6 @@
+mod dark_mode;
+pub use dark_mode::*;
+
 mod dialog_title;
 pub use dialog_title::*;
 

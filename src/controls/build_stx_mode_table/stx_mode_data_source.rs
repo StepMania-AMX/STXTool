@@ -1,7 +1,32 @@
-use crate::{AppState, DialogTitle, ErrorMessage, StxModeColumn};
+use crate::{is_dark_mode, AppState, DialogTitle, ErrorMessage, StxModeColumn};
 use libamx::LegacyMode;
 use libui::controls::{TableDataSource, TableValue, TableValueType};
 use strum::EnumCount;
+
+impl AppState {
+    const COLOR_BLACK: TableValue = TableValue::Color {
+        r: 0.0,
+        g: 0.0,
+        b: 0.0,
+        a: 1.0,
+    };
+
+    const COLOR_GRAY: TableValue = TableValue::Color {
+        r: 0.5,
+        g: 0.5,
+        b: 0.5,
+        a: 1.0,
+    };
+
+    const COLOR_WHITE: TableValue = TableValue::Color {
+        r: 1.0,
+        g: 1.0,
+        b: 1.0,
+        a: 1.0,
+    };
+
+    const UNDELETE: &'static str = "Undelete";
+}
 
 impl TableDataSource for AppState {
     fn num_columns(&mut self) -> i32 {
@@ -16,6 +41,7 @@ impl TableDataSource for AppState {
         let column = StxModeColumn::from_repr(column);
         match column {
             Some(StxModeColumn::Selection) => TableValueType::Int,
+            Some(StxModeColumn::Color) => TableValueType::Color,
             _ => TableValueType::String,
         }
     }
@@ -28,17 +54,29 @@ impl TableDataSource for AppState {
             (Some(StxModeColumn::Selection), Some(mode)) => {
                 TableValue::Int(self.get_is_selected(mode).unwrap_or(0))
             }
+            (Some(StxModeColumn::Color), Some(mode)) => {
+                match (self.get_is_deleted(mode), is_dark_mode()) {
+                    (true, _) => Self::COLOR_GRAY,
+                    (false, true) => Self::COLOR_WHITE,
+                    (false, false) => Self::COLOR_BLACK,
+                }
+            }
             (Some(column), Some(mode)) => {
                 let value = match column {
                     StxModeColumn::Mode => Some(mode.get_id().to_string()),
                     StxModeColumn::Difficulty => self.get_difficulty(mode),
                     StxModeColumn::BPM => self.get_bpm(mode),
                     StxModeColumn::Delay => self.get_delay(mode),
-                    StxModeColumn::Stats => self.get_stats(mode),
-                    StxModeColumn::ActionImport
-                    | StxModeColumn::ActionExport
-                    | StxModeColumn::ActionDelete => Some(column.to_string()),
-                    StxModeColumn::Selection => None, // should never happen, added for completeness
+                    StxModeColumn::Splits => self.get_splits(mode),
+                    StxModeColumn::ActionEdit => Some(column.to_string()),
+                    StxModeColumn::ActionDelete => {
+                        if self.get_is_deleted(mode) {
+                            Some(Self::UNDELETE.to_string())
+                        } else {
+                            Some(column.to_string())
+                        }
+                    }
+                    StxModeColumn::Selection | StxModeColumn::Color => None, // should never happen
                 };
                 TableValue::String(value.unwrap_or(Self::PLACEHOLDER.to_string()))
             }
@@ -60,12 +98,7 @@ impl TableDataSource for AppState {
         let column = StxModeColumn::from_repr(column);
         let mode = LegacyMode::from_repr(row as u32);
         match (column, mode) {
-            (Some(StxModeColumn::ActionImport), Some(mode)) => {
-                self.set_next_import(Some(mode));
-            }
-            (Some(StxModeColumn::ActionExport), Some(mode)) => {
-                self.set_next_export(Some(mode));
-            }
+            (Some(StxModeColumn::ActionEdit), Some(mode)) => self.set_next_edit(mode),
             (Some(StxModeColumn::ActionDelete), Some(mode)) => self.set_next_delete(mode),
             (Some(StxModeColumn::Selection), Some(mode)) => self.toggle_is_selected(mode),
             (Some(column), Some(mode)) => match value {
